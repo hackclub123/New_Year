@@ -154,7 +154,8 @@
         /* ==================== MIND-BLOWING OPENING PORTAL ==================== */
 #curtain {
     position: fixed; inset: 0; 
-    background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%);
+    /* CHANGED: Pure Black Background for maximum contrast */
+    background: #000000;
     z-index: 9999;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s;
@@ -170,29 +171,32 @@
 
 .ring {
     position: absolute; border-radius: 50%;
-    border: 2px solid transparent;
+    border: 3px solid transparent; /* Thicker border for better visibility */
 }
 
+/* Ring 1: The Main Pulsing Ring */
 .ring-1 {
     width: 100%; height: 100%;
-    border-top: 4px solid var(--theme-color);
-    border-bottom: 4px solid var(--theme-color);
-    box-shadow: 0 0 20px var(--theme-glow);
-    animation: spin 4s linear infinite;
+    border-top: 5px solid #ff00ff; /* Start Pink */
+    border-bottom: 5px solid #ff00ff;
+    /* Added 'neonCycle' animation to change colors */
+    animation: spin 4s linear infinite, neonCycle 2s linear infinite; 
 }
 
+/* Ring 2: The Inner Fast Ring */
 .ring-2 {
-    width: 80%; height: 80%;
-    border-left: 2px solid #00f3ff;
-    border-right: 2px solid #00f3ff;
-    box-shadow: 0 0 15px #00f3ff;
-    animation: spinReverse 6s linear infinite;
+    width: 75%; height: 75%;
+    border-left: 3px solid #00ffff; /* Start Cyan */
+    border-right: 3px solid #00ffff;
+    /* Reverse spin + Faster color change (1s) */
+    animation: spinReverse 6s linear infinite, neonCycle 1s linear infinite reverse; 
 }
 
+/* Ring 3: The Outer Detail Ring */
 .ring-3 {
-    width: 120%; height: 120%;
-    border: 1px dashed rgba(255,255,255,0.2);
-    animation: spin 10s linear infinite;
+    width: 130%; height: 130%;
+    border: 1px dashed rgba(255,255,255,0.4);
+    animation: spin 15s linear infinite;
 }
 
 /* The Glowing 2026 */
@@ -200,9 +204,10 @@
     font-family: 'Playfair Display', serif;
     font-size: 4rem; 
     color: #fff;
-    text-shadow: 0 0 30px var(--theme-color), 0 0 60px var(--theme-color);
+    /* Dynamic Shadow matching the neon theme */
+    text-shadow: 0 0 20px #fff; 
     position: relative; z-index: 10;
-    animation: heartbeat 2s ease-in-out infinite;
+    animation: heartbeat 0.8s ease-in-out infinite alternate; /* Faster heartbeat */
 }
 
 /* The "Unlock" Button */
@@ -215,38 +220,48 @@
     font-size: 1.2rem;
     letter-spacing: 3px;
     text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 2px solid #fff; /* High contrast border */
     border-radius: 50px;
     cursor: pointer;
     overflow: hidden;
     transition: 0.3s;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
     backdrop-filter: blur(5px);
 }
 
 .unlock-btn::before {
     content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    background: linear-gradient(90deg, transparent, #fff, transparent);
     animation: shine 3s infinite;
 }
 
-.unlock-btn:active { transform: scale(0.95); }
+.unlock-btn:active { transform: scale(0.95); background: #fff; color: #000; }
 
 .instruction-text {
-    margin-top: 20px; color: rgba(255,255,255,0.5); 
+    margin-top: 20px; color: #fff; 
     font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
-    animation: blink 2s infinite;
+    animation: blink 1s infinite; /* Faster blink */
 }
 
 /* Hiding Animation */
 .curtain-hidden { transform: scale(1.5); opacity: 0; pointer-events: none; }
 
-/* Animations */
+/* --- ANIMATIONS --- */
+
+/* NEW: The Color Changing Engine */
+@keyframes neonCycle {
+    0%   { border-color: #ff00ff; box-shadow: 0 0 20px #ff00ff, inset 0 0 10px #ff00ff; } /* Neon Pink */
+    25%  { border-color: #00ffff; box-shadow: 0 0 20px #00ffff, inset 0 0 10px #00ffff; } /* Cyan */
+    50%  { border-color: #00ff00; box-shadow: 0 0 20px #00ff00, inset 0 0 10px #00ff00; } /* Lime Green */
+    75%  { border-color: #ffff00; box-shadow: 0 0 20px #ffff00, inset 0 0 10px #ffff00; } /* Bright Yellow */
+    100% { border-color: #ff00ff; box-shadow: 0 0 20px #ff00ff, inset 0 0 10px #ff00ff; } /* Back to Pink */
+}
+
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes spinReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
-@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes heartbeat { 0% { transform: scale(1); text-shadow: 0 0 20px #fff; } 100% { transform: scale(1.1); text-shadow: 0 0 40px #ff00ff; } }
 @keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
-@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+@keyframes blink { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
         
         /* Music & Toast */
         .music-toggle {
@@ -647,4 +662,5 @@
     </script>
 </body>
 </html>
+
 

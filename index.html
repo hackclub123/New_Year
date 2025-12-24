@@ -151,14 +151,102 @@
         .bg-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .bg-copy { background: #555; }
 
-        /* Curtain */
-        #curtain {
-            position: fixed; inset: 0; background: #000; z-index: 2000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: transform 0.8s ease-in;
-        }
-        .curtain-logo { font-size: 3rem; color: #ffd700; margin-bottom: 20px; animation: float 3s infinite; }
-        .curtain-hidden { transform: translateY(-100%); pointer-events: none; }
+        /* ==================== MIND-BLOWING OPENING PORTAL ==================== */
+#curtain {
+    position: fixed; inset: 0; 
+    background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%);
+    z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s;
+    overflow: hidden;
+}
+
+/* The Rotating Energy Rings */
+.portal-container {
+    position: relative; width: 300px; height: 300px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 40px;
+}
+
+.ring {
+    position: absolute; border-radius: 50%;
+    border: 2px solid transparent;
+}
+
+.ring-1 {
+    width: 100%; height: 100%;
+    border-top: 4px solid var(--theme-color);
+    border-bottom: 4px solid var(--theme-color);
+    box-shadow: 0 0 20px var(--theme-glow);
+    animation: spin 4s linear infinite;
+}
+
+.ring-2 {
+    width: 80%; height: 80%;
+    border-left: 2px solid #00f3ff;
+    border-right: 2px solid #00f3ff;
+    box-shadow: 0 0 15px #00f3ff;
+    animation: spinReverse 6s linear infinite;
+}
+
+.ring-3 {
+    width: 120%; height: 120%;
+    border: 1px dashed rgba(255,255,255,0.2);
+    animation: spin 10s linear infinite;
+}
+
+/* The Glowing 2026 */
+.curtain-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; 
+    color: #fff;
+    text-shadow: 0 0 30px var(--theme-color), 0 0 60px var(--theme-color);
+    position: relative; z-index: 10;
+    animation: heartbeat 2s ease-in-out infinite;
+}
+
+/* The "Unlock" Button */
+.unlock-btn {
+    position: relative;
+    padding: 18px 50px;
+    background: transparent;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: 0.3s;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.unlock-btn::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    animation: shine 3s infinite;
+}
+
+.unlock-btn:active { transform: scale(0.95); }
+
+.instruction-text {
+    margin-top: 20px; color: rgba(255,255,255,0.5); 
+    font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
+    animation: blink 2s infinite;
+}
+
+/* Hiding Animation */
+.curtain-hidden { transform: scale(1.5); opacity: 0; pointer-events: none; }
+
+/* Animations */
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spinReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
         
         /* Music & Toast */
         .music-toggle {
@@ -200,10 +288,18 @@
     </audio>
 
     <div id="curtain">
-        <div class="curtain-logo">2026</div>
-        <button class="btn-primary" style="width: auto; padding: 15px 40px;" onclick="unleashMagic()">
-            ✨ Open 2026
+        <div class="portal-container">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+            <div class="curtain-logo">2026</div>
+        </div>
+        
+        <button class="unlock-btn" onclick="unleashMagic()">
+            Unlock The Magic
         </button>
+        
+        <p class="instruction-text">Turn Sound On 🔊</p>
     </div>
 
     <div class="stars"></div>
@@ -551,3 +647,4 @@
     </script>
 </body>
 </html>
+

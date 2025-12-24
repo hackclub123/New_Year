@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>✨ Happy New Year 2026 | Create Your Magic Wish</title>
+    
+    <meta name="description" content="Create your magical, personalized New Year 2026 greeting card! Upload your photo, add a wish, and share the wonder.">
+    <meta property="og:title" content="🌟 A Magical New Year 2026 Wish for You!">
+    <meta property="og:description" content="Someone sent you a magical greeting. Tap to view and create your own legacy wish for 2026!">
+    <meta property="og:image" content="https://i.ibb.co/vz1zXyT/ny2026-preview.jpg">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#050518">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        /* =========================================
+           CORE THEME
+           ========================================= */
+        :root {
+            --bg-deep: #02020a;
+            --bg-gradient: radial-gradient(circle at center, #1a0b2e 0%, #02020a 100%);
+            --gold: #ffd700;
+            --gold-glow: 0 0 15px rgba(255, 215, 0, 0.6);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow-x: hidden; font-family: 'Poppins', sans-serif; background: var(--bg-deep); color: #fff; }
+        
+        .stars { position: fixed; inset: 0; z-index: -1; background: var(--bg-gradient); }
+        #fireworksCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+        /* =========================================
+           UI COMPONENTS
+           ========================================= */
+        .container {
+            max-width: 600px; margin: 0 auto; padding: 20px 20px 100px 20px;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 10;
+        }
+
+        h1.hero-title {
+            font-family: 'Playfair Display', serif; font-size: 2.5rem; 
+            background: linear-gradient(to right, #fff, var(--gold), #fff); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin: 10px 0; animation: glowPulse 3s infinite; text-align: center;
+        }
+
+        /* Countdown */
+        .countdown-box { display: flex; gap: 8px; margin: 15px 0; justify-content: center; }
+        .time-unit {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            padding: 8px; border-radius: 8px; text-align: center; min-width: 55px;
+            backdrop-filter: blur(5px);
+        }
+        .time-val { font-size: 1.3rem; font-weight: bold; color: var(--gold); display: block; }
+        .time-label { font-size: 0.6rem; text-transform: uppercase; opacity: 0.8; }
+
+        /* The Card */
+        .card-stage { width: 100%; perspective: 1000px; margin: 20px 0; }
+        .wishing-card {
+            background: rgba(0,0,0,0.7); border: 2px solid var(--gold);
+            border-radius: 15px; padding: 25px; text-align: center;
+            position: relative; overflow: hidden; transform-style: preserve-3d;
+            box-shadow: 0 0 30px rgba(255,215,0,0.2); transition: 0.3s;
+        }
+        .wishing-card::after { /* Holographic sheen */
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+            pointer-events: none; mix-blend-mode: overlay;
+        }
+        .photo-frame {
+            width: 140px; height: 140px; margin: 0 auto 15px;
+            border-radius: 50%; border: 3px solid var(--gold);
+            padding: 4px; box-shadow: 0 0 15px var(--gold);
+        }
+        .user-photo { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; background: #222; }
+        .card-name { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); margin: 10px 0; }
+        .card-msg { font-size: 0.95rem; font-style: italic; color: #ddd; min-height: 40px; }
+        .card-year { 
+            font-size: 4rem; font-weight: 900; opacity: 0.1; position: absolute; 
+            bottom: -15px; right: 10px; line-height: 1; pointer-events: none;
+        }
+
+        /* THEME VARIATIONS */
+        .theme-romantic .wishing-card { border-color: #ff00de; box-shadow: 0 0 20px #ff00de; }
+        .theme-romantic .card-name { color: #ff00de; }
+        
+        .theme-party .wishing-card { border-color: #00f3ff; box-shadow: 0 0 20px #00f3ff; }
+        .theme-party .card-name { color: #00f3ff; }
+
+        .theme-passion .wishing-card { border-color: #ff0040; box-shadow: 0 0 20px #ff0040; }
+        .theme-passion .card-name { color: #ff0040; }
+
+        .theme-luck .wishing-card { border-color: #00ff40; box-shadow: 0 0 20px #00ff40; }
+        .theme-luck .card-name { color: #00ff40; }
+
+        .theme-silver .wishing-card { border-color: #e0e0e0; box-shadow: 0 0 20px #e0e0e0; }
+        .theme-silver .card-name { color: #e0e0e0; }
+
+        /* Controls */
+        .control-panel { background: var(--glass); padding: 20px; border-radius: 15px; width: 100%; border: 1px solid var(--glass-border); }
+        input[type="text"], textarea {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid #444;
+            color: white; padding: 12px; border-radius: 8px; margin-bottom: 10px;
+        }
+        .theme-toggles { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 15px 0; }
+        .theme-btn { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); transition: 0.2s; }
+        .theme-btn.active { transform: scale(1.2); border-color: #fff; }
+
+        .btn-primary {
+            width: 100%; background: linear-gradient(45deg, var(--gold), #ffaa00);
+            color: #000; border: none; padding: 15px; border-radius: 50px;
+            font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        /* NEW SHARE BAR */
+        .share-sticky {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            padding: 15px 10px; display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 10px; border-top: 1px solid #333; z-index: 100;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .share-sticky.visible { transform: translateY(0); }
+        
+        .share-btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: none; border: none; color: white; font-size: 0.8rem; cursor: pointer;
+        }
+        .share-icon-circle {
+            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; margin-bottom: 5px; color: white; transition: 0.2s;
+        }
+        .share-btn:active .share-icon-circle { transform: scale(0.9); }
+        
+        /* Platform Colors */
+        .bg-wa { background: #25D366; }
+        .bg-fb { background: #1877F2; }
+        .bg-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .bg-copy { background: #555; }
+
+        /* Curtain & Music */
+        #curtain {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: transform 0.8s ease-in;
+        }
+        .curtain-logo { font-size: 3rem; color: var(--gold); margin-bottom: 20px; animation: float 3s infinite; }
+        .curtain-hidden { transform: translateY(-100%); pointer-events: none; }
+        
+        .music-toggle {
+            position: absolute; top: 15px; right: 15px; width: 40px; height: 40px;
+            background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; z-index: 50; cursor: pointer;
+        }
+        .music-anim { animation: spin 4s linear infinite; }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: #333; color: #fff; padding: 10px 20px; border-radius: 20px;
+            opacity: 0; transition: 0.3s; pointer-events: none; z-index: 200; font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes spin { 100%{transform:rotate(360deg)} }
+        @keyframes glowPulse { 0%,100%{text-shadow:0 0 10px rgba(255,215,0,0.5)} 50%{text-shadow:0 0 25px rgba(255,215,0,1)} }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <audio id="bgMusic" loop>
+        <source src="newyear.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="curtain">
+        <div class="curtain-logo">2026</div>
+        <button class="btn-primary" style="width: auto; padding: 15px 40px;" onclick="unleashMagic()">
+            ✨ Enter Magic
+        </button>
+        <p style="color:#666; font-size:0.8rem; margin-top:15px;">Sound On 🔊</p>
+    </div>
+
+    <div class="stars"></div>
+    <canvas id="fireworksCanvas"></canvas>
+
+    <div class="container">
+        <div class="music-toggle" onclick="toggleMusic()"><i class="fas fa-music"></i></div>
+        
+        <h1 class="hero-title">Happy New Year</h1>
+        
+        <div class="countdown-box">
+            <div class="time-unit"><span class="time-val" id="d">00</span><span class="time-label">Days</span></div>
+            <div class="time-unit"><span class="time-val" id="h">00</span><span class="time-label">Hrs</span></div>
+            <div class="time-unit"><span class="time-val" id="m">00</span><span class="time-label">Min</span></div>
+            <div class="time-unit"><span class="time-val" id="s">00</span><span class="time-label">Sec</span></div>
+        </div>
+
+        <p style="color: #bbb; font-size: 0.9rem; text-align:center; margin-bottom:20px;">
+            <i class="fas fa-users"></i> <span id="shareCount">1,204,592</span> people joined the celebration
+        </p>
+
+        <div class="card-stage">
+            <div class="wishing-card" id="finalCard">
+                <div class="photo-frame">
+                    <img src="https://i.ibb.co/31z400V/avatar-placeholder.png" id="cardImg" class="user-photo" alt="User">
+                </div>
+                <h2 class="card-name" id="cardNameDisplay">Your Name</h2>
+                <div class="card-msg" id="cardMsgDisplay">May your 2026 be filled with starlight and success! ✨</div>
+                <div class="card-year">2026</div>
+            </div>
+        </div>
+
+        <div id="creatorPanel" class="control-panel">
+            <h3 style="color:var(--gold); text-align:center; margin-bottom:15px;">Create Your Wish ✍️</h3>
+            
+            <input type="text" id="inputName" placeholder="Enter Your Name..." maxlength="20">
+            
+            <label class="btn-primary" style="background:#222; color:#fff; border:1px solid #444; margin-bottom:10px;">
+                <i class="fas fa-camera"></i> Upload Photo
+                <input type="file" id="imgUpload" accept="image/*" style="display: none;" onchange="handleImage(this)">
+            </label>
+            
+            <textarea id="inputMsg" rows="2" placeholder="Write a short wish..." maxlength="60"></textarea>
+
+            <div class="theme-toggles">
+                <div class="theme-btn" style="background:var(--gold)" onclick="setTheme('default')" title="Gold"></div>
+                <div class="theme-btn" style="background:#ff00de" onclick="setTheme('theme-romantic')" title="Romantic"></div>
+                <div class="theme-btn" style="background:#00f3ff" onclick="setTheme('theme-party')" title="Party"></div>
+                <div class="theme-btn" style="background:#ff0040" onclick="setTheme('theme-passion')" title="Passion"></div>
+                <div class="theme-btn" style="background:#00ff40" onclick="setTheme('theme-luck')" title="Luck"></div>
+                <div class="theme-btn" style="background:#e0e0e0" onclick="setTheme('theme-silver')" title="Future"></div>
+            </div>
+
+            <button class="btn-primary" onclick="generateLink()">
+                <i class="fas fa-wand-magic-sparkles"></i> Generate & Share
+            </button>
+        </div>
+
+        <div id="viewModeControls" class="hidden" style="text-align:center; width:100%; display:none;">
+            <p style="margin-bottom:15px;">👇 Create your own magical wish!</p>
+            <button class="btn-primary" onclick="window.location.href=window.location.href.split('?')[0]">
+                Create My Own 🚀
+            </button>
+        </div>
+    </div>
+
+    <div class="share-sticky" id="shareBar">
+        <button class="share-btn" onclick="shareTo('wa')">
+            <div class="share-icon-circle bg-wa"><i class="fab fa-whatsapp"></i></div>
+            WhatsApp
+        </button>
+        <button class="share-btn" onclick="shareTo('fb')">
+            <div class="share-icon-circle bg-fb"><i class="fab fa-facebook-f"></i></div>
+            Facebook
+        </button>
+        <button class="share-btn" onclick="shareTo('ig')">
+            <div class="share-icon-circle bg-ig"><i class="fab fa-instagram"></i></div>
+            Instagram
+        </button>
+        <button class="share-btn" onclick="shareTo('copy')">
+            <div class="share-icon-circle bg-copy"><i class="fas fa-link"></i></div>
+            Copy Link
+        </button>
+    </div>
+
+    <div id="toast">Notification</div>
+
+    <script>
+        // CONFIG
+        const TARGET_DATE = new Date("January 1, 2026 00:00:00").getTime();
+        let currentTheme = 'default';
+        let uploadedImgUrl = ''; // Stores ImgBB URL
+        const BASE_URL = window.location.href.split('?')[0];
+
+        // INIT
+        window.onload = function() {
+            startCountdown();
+            initFireworks();
+            parseURL();
+            
+            // Random counter
+            const c = document.getElementById('shareCount');
+            let n = 1204592;
+            setInterval(() => c.innerText = (n += Math.floor(Math.random()*5)).toLocaleString(), 3000);
+        };
+
+        function unleashMagic() {
+            document.getElementById('curtain').classList.add('curtain-hidden');
+            toggleMusic(true);
+            launchFireworks();
+        }
+
+        function toggleMusic(forcePlay) {
+            const aud = document.getElementById('bgMusic');
+            const icon = document.querySelector('.music-toggle i');
+            const btn = document.querySelector('.music-toggle');
+            
+            if(forcePlay || aud.paused) {
+                aud.play().catch(e => console.log("User interaction needed"));
+                icon.className = 'fas fa-pause';
+                btn.classList.add('music-anim');
+            } else {
+                aud.pause();
+                icon.className = 'fas fa-music';
+                btn.classList.remove('music-anim');
+            }
+        }
+
+        function startCountdown() {
+            setInterval(() => {
+                const now = new Date().getTime();
+                const dist = TARGET_DATE - now;
+                if(dist < 0) return;
+                
+                document.getElementById("d").innerText = Math.floor(dist / (1000 * 60 * 60 * 24));
+                document.getElementById("h").innerText = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("m").innerText = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("s").innerText = Math.floor((dist % (1000 * 60)) / 1000);
+            }, 1000);
+        }
+
+        // THEME & INPUTS
+        function setTheme(t) {
+            currentTheme = t;
+            document.getElementById('finalCard').className = `wishing-card ${t}`;
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            if(navigator.vibrate) navigator.vibrate(50);
+        }
+
+        document.getElementById('inputName').addEventListener('input', (e) => {
+            document.getElementById('cardNameDisplay').innerText = e.target.value || "Your Name";
+        });
+        document.getElementById('inputMsg').addEventListener('input', (e) => {
+            document.getElementById('cardMsgDisplay').innerText = e.target.value || "May your 2026 be filled with starlight and success! ✨";
+        });
+
+        // IMAGE UPLOAD (ImgBB)
+        function handleImage(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                showToast("Uploading... ⏳");
+                
+                // Preview immediately
+                const reader = new FileReader();
+                reader.onload = function(e) { document.getElementById('cardImg').src = e.target.result; }
+                reader.readAsDataURL(file);
+
+                // *** IMGBB API UPLOAD ***
+                const formData = new FormData();
+                formData.append("image", file);
+                
+                // REPLACE "YOUR_IMGBB_API_KEY_HERE" WITH YOUR ACTUAL KEY
+                const API_KEY = "YOUR_IMGBB_API_KEY_HERE"; 
+                
+                if(API_KEY === "YOUR_IMGBB_API_KEY_HERE") {
+                    showToast("⚠️ API Key missing in code!");
+                    return;
+                }
+
+                fetch(`https://api.imgbb.com/1/upload?key=${API_KEY}`, { method: "POST", body: formData })
+                .then(res => res.json())
+                .then(res => {
+                    if(res.success) {
+                        uploadedImgUrl = res.data.url;
+                        showToast("Photo Added! ✨");
+                    } else { showToast("Upload failed"); }
+                });
+            }
+        }
+
+        // GENERATE LINK
+        function generateLink() {
+            const name = document.getElementById('inputName').value.trim();
+            if(!name) { showToast("Please enter your name!"); return; }
+            
+            const msg = document.getElementById('inputMsg').value.trim();
+            
+            const params = new URLSearchParams();
+            params.set('n', encodeURIComponent(name));
+            if(uploadedImgUrl) params.set('i', encodeURIComponent(uploadedImgUrl));
+            if(msg) params.set('m', encodeURIComponent(msg));
+            if(currentTheme !== 'default') params.set('t', currentTheme);
+
+            const finalURL = `${BASE_URL}?${params.toString()}`;
+            window.history.pushState({}, '', finalURL);
+            
+            document.getElementById('shareBar').classList.add('visible');
+            document.querySelector('.card-stage').scrollIntoView({behavior:'smooth'});
+            launchFireworks();
+            showToast("✨ Wish Created! Share below 👇");
+        }
+
+        // PARSE LINK
+        function parseURL() {
+            const params = new URLSearchParams(window.location.search);
+            if(params.has('n')) {
+                const name = decodeURIComponent(params.get('n'));
+                const img = params.get('i') ? decodeURIComponent(params.get('i')) : "https://i.ibb.co/31z400V/avatar-placeholder.png";
+                const msg = params.get('m') ? decodeURIComponent(params.get('m')) : "May your 2026 be filled with starlight and success! ✨";
+                const theme = params.get('t') || 'default';
+
+                document.getElementById('cardNameDisplay').innerText = name;
+                document.getElementById('cardImg').src = img;
+                document.getElementById('cardMsgDisplay').innerText = msg;
+                setTheme(theme);
+
+                document.getElementById('creatorPanel').style.display = 'none';
+                document.getElementById('viewModeControls').style.display = 'block';
+                document.getElementById('shareBar').classList.add('visible');
+            }
+        }
+
+        // SHARING LOGIC
+        function shareTo(platform) {
+            const url = window.location.href;
+            const text = `🌟 ${document.getElementById('cardNameDisplay').innerText} sent you a magical New Year 2026 wish!`;
+            
+            if(platform === 'wa') {
+                window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, '_blank');
+            } else if(platform === 'fb') {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+            } else if(platform === 'copy') {
+                navigator.clipboard.writeText(url);
+                showToast("Link Copied! 📋");
+            } else if(platform === 'ig') {
+                // Instagram Strategy: Download Image
+                showToast("Saving image for Instagram... 📸");
+                const card = document.getElementById('finalCard');
+                html2canvas(card, { useCORS: true, scale: 2, backgroundColor: null }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'My-NY2026-Wish.png';
+                    link.href = canvas.toDataURL();
+                    link.click();
+                    setTimeout(() => showToast("Image Saved! Post to Story 📲"), 1500);
+                });
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.opacity = 1;
+            setTimeout(() => t.style.opacity = 0, 3000);
+        }
+
+        // FIREWORKS
+        function initFireworks() {
+            const c = document.getElementById('fireworksCanvas');
+            const ctx = c.getContext('2d');
+            let w, h, particles = [];
+            
+            const resize = () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; };
+            window.addEventListener('resize', resize); resize();
+
+            const loop = () => {
+                requestAnimationFrame(loop);
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.fillRect(0,0,w,h);
+                ctx.globalCompositeOperation = 'lighter';
+                
+                particles.forEach((p, i) => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.alpha -= 0.02;
+                    ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
+                    if(p.alpha <= 0) particles.splice(i, 1);
+                });
+            };
+            loop();
+            window.launchFireworks = () => {
+                for(let i=0; i<50; i++) particles.push({
+                    x: w/2, y: h/2, vx: (Math.random()-0.5)*15, vy: (Math.random()-0.5)*15,
+                    alpha: 1, color: `hsl(${Math.random()*360},100%,50%)`
+                });
+            };
+        }
+    </script>
+</body>
+</html>

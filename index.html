@@ -362,8 +362,7 @@
                 <input type="file" id="imgUpload" accept="image/*" style="display: none;" onchange="handleCloudinaryUpload(this)">
             </label>
             
-            <textarea id="messageInput" placeholder="Write your magical wish here...">12 Saal baad nahi, bas 12 Mahine baad aaya hoon ye bolne: Happy New Year 2026! 🥂</textarea>
-
+            <textarea id="inputMsg" rows="2" placeholder="Write a short wish..." maxlength="120">12 Saal to nahi, par 12 Mahine wait kiya hai ye bolne ke liye... Happy New Year 2026! 🥂</textarea>
             <p style="text-align:center; font-size:0.8rem; margin-top:5px;">Pick a Vibe:</p>
             <div class="theme-toggles">
                 <div class="theme-btn" style="background:#ffd700" onclick="updateColor('#ffd700')" title="Gold"></div>
@@ -454,13 +453,17 @@
         }
 
         // --- PREVIEWS ---
-        document.getElementById('inputName').addEventListener('input', (e) => {
-            document.getElementById('cardNameDisplay').innerText = e.target.value || "Your Name";
-        });
-        document.getElementById('inputMsg').addEventListener('input', (e) => {
-            document.getElementById('cardMsgDisplay').innerText = e.target.value || "Wishing you joy, prosperity, and magic in 2026! ✨";
-        });
+document.getElementById('inputName').addEventListener('input', (e) => {
+    document.getElementById('cardNameDisplay').innerText = e.target.value || "Your Name";
+});
 
+document.getElementById('inputMsg').addEventListener('input', (e) => {
+    document.getElementById('cardMsgDisplay').innerText = e.target.value || "Wishing you joy, prosperity, and magic in 2026! ✨";
+});
+
+// ✅ ADD THIS LINE RIGHT HERE:
+// It forces the card to update with your "12 Saal" text immediately
+document.getElementById('cardMsgDisplay').innerText = document.getElementById('inputMsg').value;
         // --- CLOUDINARY UPLOAD (New) ---
         function handleCloudinaryUpload(input) {
             if (input.files && input.files[0]) {
@@ -667,6 +670,7 @@
     </script>
 </body>
 </html>
+
 
 
 
